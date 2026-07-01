@@ -4,6 +4,7 @@
 #include <QObject>
 
 class QAction;
+class QIcon;
 class QMenu;
 class QSystemTrayIcon;
 class InputWindow;
@@ -33,6 +34,7 @@ signals:
     void backupRequested();
     void restoreRequested();
     void quitRequested();
+    void todayRecordsRequested();
 
 private slots:
     void onShowInput();
@@ -44,6 +46,8 @@ private slots:
     void onQuit();
 
 private:
+    QIcon makeTrayIcon() const;
+
     InputWindow *m_inputWindow;
     HistoryWindow *m_historyWindow;
     PetWidget *m_petWidget;

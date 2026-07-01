@@ -47,6 +47,7 @@ template <> constexpr inline auto TrayManager::qt_create_metaobjectdata<qt_meta_
         "backupRequested",
         "restoreRequested",
         "quitRequested",
+        "todayRecordsRequested",
         "onShowInput",
         "onShowHistory",
         "onShowPet",
@@ -71,20 +72,22 @@ template <> constexpr inline auto TrayManager::qt_create_metaobjectdata<qt_meta_
         QtMocHelpers::SignalData<void()>(7, 2, QMC::AccessPublic, QMetaType::Void),
         // Signal 'quitRequested'
         QtMocHelpers::SignalData<void()>(8, 2, QMC::AccessPublic, QMetaType::Void),
+        // Signal 'todayRecordsRequested'
+        QtMocHelpers::SignalData<void()>(9, 2, QMC::AccessPublic, QMetaType::Void),
         // Slot 'onShowInput'
-        QtMocHelpers::SlotData<void()>(9, 2, QMC::AccessPrivate, QMetaType::Void),
-        // Slot 'onShowHistory'
         QtMocHelpers::SlotData<void()>(10, 2, QMC::AccessPrivate, QMetaType::Void),
-        // Slot 'onShowPet'
+        // Slot 'onShowHistory'
         QtMocHelpers::SlotData<void()>(11, 2, QMC::AccessPrivate, QMetaType::Void),
-        // Slot 'onHideAll'
+        // Slot 'onShowPet'
         QtMocHelpers::SlotData<void()>(12, 2, QMC::AccessPrivate, QMetaType::Void),
-        // Slot 'onBackupData'
+        // Slot 'onHideAll'
         QtMocHelpers::SlotData<void()>(13, 2, QMC::AccessPrivate, QMetaType::Void),
-        // Slot 'onRestoreData'
+        // Slot 'onBackupData'
         QtMocHelpers::SlotData<void()>(14, 2, QMC::AccessPrivate, QMetaType::Void),
-        // Slot 'onQuit'
+        // Slot 'onRestoreData'
         QtMocHelpers::SlotData<void()>(15, 2, QMC::AccessPrivate, QMetaType::Void),
+        // Slot 'onQuit'
+        QtMocHelpers::SlotData<void()>(16, 2, QMC::AccessPrivate, QMetaType::Void),
     };
     QtMocHelpers::UintData qt_properties {
     };
@@ -115,13 +118,14 @@ void TrayManager::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id,
         case 4: _t->backupRequested(); break;
         case 5: _t->restoreRequested(); break;
         case 6: _t->quitRequested(); break;
-        case 7: _t->onShowInput(); break;
-        case 8: _t->onShowHistory(); break;
-        case 9: _t->onShowPet(); break;
-        case 10: _t->onHideAll(); break;
-        case 11: _t->onBackupData(); break;
-        case 12: _t->onRestoreData(); break;
-        case 13: _t->onQuit(); break;
+        case 7: _t->todayRecordsRequested(); break;
+        case 8: _t->onShowInput(); break;
+        case 9: _t->onShowHistory(); break;
+        case 10: _t->onShowPet(); break;
+        case 11: _t->onHideAll(); break;
+        case 12: _t->onBackupData(); break;
+        case 13: _t->onRestoreData(); break;
+        case 14: _t->onQuit(); break;
         default: ;
         }
     }
@@ -139,6 +143,8 @@ void TrayManager::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id,
         if (QtMocHelpers::indexOfMethod<void (TrayManager::*)()>(_a, &TrayManager::restoreRequested, 5))
             return;
         if (QtMocHelpers::indexOfMethod<void (TrayManager::*)()>(_a, &TrayManager::quitRequested, 6))
+            return;
+        if (QtMocHelpers::indexOfMethod<void (TrayManager::*)()>(_a, &TrayManager::todayRecordsRequested, 7))
             return;
     }
 }
@@ -162,14 +168,14 @@ int TrayManager::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 14)
+        if (_id < 15)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 14;
+        _id -= 15;
     }
     if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 14)
+        if (_id < 15)
             *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType();
-        _id -= 14;
+        _id -= 15;
     }
     return _id;
 }
@@ -214,5 +220,11 @@ void TrayManager::restoreRequested()
 void TrayManager::quitRequested()
 {
     QMetaObject::activate(this, &staticMetaObject, 6, nullptr);
+}
+
+// SIGNAL 7
+void TrayManager::todayRecordsRequested()
+{
+    QMetaObject::activate(this, &staticMetaObject, 7, nullptr);
 }
 QT_WARNING_POP

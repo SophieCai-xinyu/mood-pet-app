@@ -70,11 +70,10 @@ InputWindow::~InputWindow() = default;
 void InputWindow::createLayout()
 {
     m_titleLabel = new QLabel(tr("Note"), this);
-    m_titleLabel->setStyleSheet("color: #f5f8ff; font-size: 18px; font-weight: bold;");
+    m_titleLabel->setStyleSheet("color: #f5f8ff; font-size: 18px; font-weight: bold; padding: 10px 0; background: rgba(20, 28, 66, 0.78); border-radius: 12px;");
     m_titleLabel->setAlignment(Qt::AlignCenter);
     m_titleLabel->setCursor(Qt::OpenHandCursor);
     m_titleLabel->setFixedHeight(44);
-    m_titleLabel->setStyleSheet(m_titleLabel->styleSheet() + "padding: 10px 0; background: rgba(20, 28, 66, 0.78); border-radius: 12px;");
 
     m_noteInput->setPlaceholderText(tr("Type your note here..."));
     m_noteInput->setFixedHeight(220);
@@ -129,10 +128,8 @@ void InputWindow::setTextFont(const QFont &font)
 
 void InputWindow::applyTextStyle()
 {
-    m_noteInput->setFont(m_textFont);
     const QString colorName = m_textColor.name(QColor::HexRgb);
-    const QString style = QString("color: %1;").arg(colorName);
-    m_noteInput->setStyleSheet(style);
+    m_noteInput->setStyleSheet(QString("color: %1;").arg(colorName));
     m_noteInput->setFont(m_textFont);
 }
 

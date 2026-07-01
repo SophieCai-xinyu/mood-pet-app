@@ -774,6 +774,11 @@ release/moc_PetWidget.cpp: ../../PetWidget.h \
 		D:/Qt/6.11.1/mingw_64/include/QtGui/qinputmethod.h \
 		D:/Qt/6.11.1/mingw_64/include/QtCore/qlocale.h \
 		D:/Qt/6.11.1/mingw_64/include/QtGui/qguiapplication_platform.h \
+		D:/Qt/6.11.1/mingw_64/include/QtCore/QDate \
+		D:/Qt/6.11.1/mingw_64/include/QtCore/qdatetime.h \
+		D:/Qt/6.11.1/mingw_64/include/QtCore/qcalendar.h \
+		D:/Qt/6.11.1/mingw_64/include/QtCore/QSettings \
+		D:/Qt/6.11.1/mingw_64/include/QtCore/qsettings.h \
 		D:/Qt/6.11.1/mingw_64/include/QtCore/QVector \
 		D:/Qt/6.11.1/mingw_64/include/QtCore/qvector.h \
 		D:/Qt/6.11.1/mingw_64/include/QtCore/QString \
@@ -1732,6 +1737,9 @@ release/mainwindow.o: ../../mainwindow.cpp ../../mainwindow.h \
 		D:/Qt/6.11.1/mingw_64/include/QtWidgets/QWidget \
 		D:/Qt/6.11.1/mingw_64/include/QtGui/QColor \
 		../../PetWidget.h \
+		D:/Qt/6.11.1/mingw_64/include/QtCore/QDate \
+		D:/Qt/6.11.1/mingw_64/include/QtCore/QSettings \
+		D:/Qt/6.11.1/mingw_64/include/QtCore/qsettings.h \
 		D:/Qt/6.11.1/mingw_64/include/QtCore/QString \
 		../../HistoryWindow.h \
 		../../TrayManager.h \
@@ -1767,8 +1775,6 @@ release/mainwindow.o: ../../mainwindow.cpp ../../mainwindow.h \
 		D:/Qt/6.11.1/mingw_64/include/QtWidgets/qgridlayout.h \
 		D:/Qt/6.11.1/mingw_64/include/QtWidgets/QColorDialog \
 		D:/Qt/6.11.1/mingw_64/include/QtWidgets/qcolordialog.h \
-		D:/Qt/6.11.1/mingw_64/include/QtCore/QSettings \
-		D:/Qt/6.11.1/mingw_64/include/QtCore/qsettings.h \
 		D:/Qt/6.11.1/mingw_64/include/QtCore/QCryptographicHash \
 		D:/Qt/6.11.1/mingw_64/include/QtCore/qcryptographichash.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o release\mainwindow.o ..\..\mainwindow.cpp
@@ -2240,6 +2246,11 @@ release/PetWidget.o: ../../PetWidget.cpp ../../PetWidget.h \
 		D:/Qt/6.11.1/mingw_64/include/QtGui/qinputmethod.h \
 		D:/Qt/6.11.1/mingw_64/include/QtCore/qlocale.h \
 		D:/Qt/6.11.1/mingw_64/include/QtGui/qguiapplication_platform.h \
+		D:/Qt/6.11.1/mingw_64/include/QtCore/QDate \
+		D:/Qt/6.11.1/mingw_64/include/QtCore/qdatetime.h \
+		D:/Qt/6.11.1/mingw_64/include/QtCore/qcalendar.h \
+		D:/Qt/6.11.1/mingw_64/include/QtCore/QSettings \
+		D:/Qt/6.11.1/mingw_64/include/QtCore/qsettings.h \
 		D:/Qt/6.11.1/mingw_64/include/QtCore/QVector \
 		D:/Qt/6.11.1/mingw_64/include/QtCore/qvector.h \
 		D:/Qt/6.11.1/mingw_64/include/QtCore/QString \
@@ -2259,8 +2270,6 @@ release/PetWidget.o: ../../PetWidget.cpp ../../PetWidget.h \
 		D:/Qt/6.11.1/mingw_64/include/QtCore/qjsonvalue.h \
 		D:/Qt/6.11.1/mingw_64/include/QtCore/qcborvalue.h \
 		D:/Qt/6.11.1/mingw_64/include/QtCore/qcborcommon.h \
-		D:/Qt/6.11.1/mingw_64/include/QtCore/qdatetime.h \
-		D:/Qt/6.11.1/mingw_64/include/QtCore/qcalendar.h \
 		D:/Qt/6.11.1/mingw_64/include/QtCore/qregularexpression.h \
 		D:/Qt/6.11.1/mingw_64/include/QtCore/quuid.h \
 		D:/Qt/6.11.1/mingw_64/include/QtCore/qjsondocument.h \
@@ -2963,6 +2972,9 @@ release/TrayManager.o: ../../TrayManager.cpp ../../TrayManager.h \
 		D:/Qt/6.11.1/mingw_64/include/QtCore/QVector \
 		D:/Qt/6.11.1/mingw_64/include/QtCore/qvector.h \
 		../../PetWidget.h \
+		D:/Qt/6.11.1/mingw_64/include/QtCore/QDate \
+		D:/Qt/6.11.1/mingw_64/include/QtCore/QSettings \
+		D:/Qt/6.11.1/mingw_64/include/QtCore/qsettings.h \
 		D:/Qt/6.11.1/mingw_64/include/QtCore/QString \
 		D:/Qt/6.11.1/mingw_64/include/QtGui/QAction \
 		D:/Qt/6.11.1/mingw_64/include/QtWidgets/QApplication \
@@ -2978,10 +2990,15 @@ release/TrayManager.o: ../../TrayManager.cpp ../../TrayManager.h \
 		D:/Qt/6.11.1/mingw_64/include/QtWidgets/qdialog.h \
 		D:/Qt/6.11.1/mingw_64/include/QtWidgets/QMenu \
 		D:/Qt/6.11.1/mingw_64/include/QtWidgets/qmenu.h \
+		D:/Qt/6.11.1/mingw_64/include/QtGui/QPainter \
+		D:/Qt/6.11.1/mingw_64/include/QtGui/qpainter.h \
+		D:/Qt/6.11.1/mingw_64/include/QtGui/qtextoption.h \
+		D:/Qt/6.11.1/mingw_64/include/QtGui/qpen.h \
+		D:/Qt/6.11.1/mingw_64/include/QtGui/QPainterPath \
+		D:/Qt/6.11.1/mingw_64/include/QtGui/qpainterpath.h \
+		D:/Qt/6.11.1/mingw_64/include/QtGui/QPixmap \
 		D:/Qt/6.11.1/mingw_64/include/QtWidgets/QSystemTrayIcon \
-		D:/Qt/6.11.1/mingw_64/include/QtWidgets/qsystemtrayicon.h \
-		D:/Qt/6.11.1/mingw_64/include/QtWidgets/QStyle \
-		D:/Qt/6.11.1/mingw_64/include/QtWidgets/qstyle.h
+		D:/Qt/6.11.1/mingw_64/include/QtWidgets/qsystemtrayicon.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o release\TrayManager.o ..\..\TrayManager.cpp
 
 release/qrc_resources.o: release/qrc_resources.cpp 

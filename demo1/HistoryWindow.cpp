@@ -89,6 +89,14 @@ void HistoryWindow::onItemClicked(QListWidgetItem *item)
     showRecordDetail(record);
 }
 
+void HistoryWindow::setTimeFilter(const QString &filter)
+{
+    const int idx = m_timeFilter->findText(filter);
+    if (idx >= 0) {
+        m_timeFilter->setCurrentIndex(idx);
+    }
+}
+
 void HistoryWindow::onExportClicked()
 {
     const QString path = QFileDialog::getSaveFileName(this, tr("Export History as TXT"), QStringLiteral("history_export.txt"), tr("Text Files (*.txt)"));

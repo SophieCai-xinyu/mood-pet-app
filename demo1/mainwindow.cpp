@@ -81,8 +81,10 @@ MainWindow::MainWindow(QWidget *parent)
     connect(m_inputWindow, &InputWindow::windowShowed, m_petWidget, &PetWidget::setStateRecording);
     connect(m_inputWindow, &InputWindow::windowHided, m_petWidget, &PetWidget::setStateIdle);
     connect(m_petWidget, &PetWidget::petClicked, this, &MainWindow::handlePetClicked);
+    connect(m_petWidget, &PetWidget::openInputRequested, this, &MainWindow::showInputWindow);
     connect(m_dataManager, &DataManager::recordsChanged, this, &MainWindow::refreshHistory);
     connect(m_trayManager, &TrayManager::showHistoryWindowRequested, this, &MainWindow::showHistoryWindowProtected);
+    connect(m_trayManager, &TrayManager::todayRecordsRequested, this, &MainWindow::showTodayRecords);
 
     auto *central = new QWidget(this);
     auto *layout = new QVBoxLayout(central);
@@ -244,6 +246,12 @@ void MainWindow::applyTextColorToUi(const QColor &c)
         "QPushButton { color: %1; }"
     ).arg(colorName);
     this->setStyleSheet(combined);
+}
+
+void MainWindow::showTodayRecords()
+{
+    m_historyWindow->setTimeFilter(tr("Today"));
+    showHistoryWindowProtected();
 }
 
 void MainWindow::refreshHistory()

@@ -48,18 +48,29 @@ int main(int argc, char *argv[])
     EventHotKeyID hotKeyInput;
     hotKeyInput.signature = 'HLHK';
     hotKeyInput.id = 1;
-    EventHotKeyRef hotKeyRefInput = nullptr;
+    static EventHotKeyRef hotKeyRefInput = nullptr;
     RegisterEventHotKey(kVK_ANSI_N, controlKey | optionKey, hotKeyInput, GetApplicationEventTarget(), 0, &hotKeyRefInput);
 
     // Ctrl+Option+P -> toggle pet visibility
     EventHotKeyID hotKeyPet;
     hotKeyPet.signature = 'HLHK';
     hotKeyPet.id = 2;
-    EventHotKeyRef hotKeyRefPet = nullptr;
+    static EventHotKeyRef hotKeyRefPet = nullptr;
     RegisterEventHotKey(kVK_ANSI_P, controlKey | optionKey, hotKeyPet, GetApplicationEventTarget(), 0, &hotKeyRefPet);
 #endif
 
     w.show();
 
-    return a.exec();
+    const int ret = a.exec();
+
+#ifdef Q_OS_MAC
+    if (hotKeyRefInput) {
+        UnregisterEventHotKey(hotKeyRefInput);
+    }
+    if (hotKeyRefPet) {
+        UnregisterEventHotKey(hotKeyRefPet);
+    }
+#endif
+
+    return ret;
 }

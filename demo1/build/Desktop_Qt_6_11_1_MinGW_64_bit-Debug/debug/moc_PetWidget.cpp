@@ -40,12 +40,15 @@ template <> constexpr inline auto PetWidget::qt_create_metaobjectdata<qt_meta_ta
     QtMocHelpers::StringRefStorage qt_stringData {
         "PetWidget",
         "petClicked",
-        ""
+        "",
+        "openInputRequested"
     };
 
     QtMocHelpers::UintData qt_methods {
         // Signal 'petClicked'
         QtMocHelpers::SignalData<void()>(1, 2, QMC::AccessPublic, QMetaType::Void),
+        // Signal 'openInputRequested'
+        QtMocHelpers::SignalData<void()>(3, 2, QMC::AccessPublic, QMetaType::Void),
     };
     QtMocHelpers::UintData qt_properties {
     };
@@ -70,11 +73,14 @@ void PetWidget::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, v
     if (_c == QMetaObject::InvokeMetaMethod) {
         switch (_id) {
         case 0: _t->petClicked(); break;
+        case 1: _t->openInputRequested(); break;
         default: ;
         }
     }
     if (_c == QMetaObject::IndexOfMethod) {
         if (QtMocHelpers::indexOfMethod<void (PetWidget::*)()>(_a, &PetWidget::petClicked, 0))
+            return;
+        if (QtMocHelpers::indexOfMethod<void (PetWidget::*)()>(_a, &PetWidget::openInputRequested, 1))
             return;
     }
 }
@@ -98,14 +104,14 @@ int PetWidget::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 1)
+        if (_id < 2)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 1;
+        _id -= 2;
     }
     if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 1)
+        if (_id < 2)
             *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType();
-        _id -= 1;
+        _id -= 2;
     }
     return _id;
 }
@@ -114,5 +120,11 @@ int PetWidget::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
 void PetWidget::petClicked()
 {
     QMetaObject::activate(this, &staticMetaObject, 0, nullptr);
+}
+
+// SIGNAL 1
+void PetWidget::openInputRequested()
+{
+    QMetaObject::activate(this, &staticMetaObject, 1, nullptr);
 }
 QT_WARNING_POP

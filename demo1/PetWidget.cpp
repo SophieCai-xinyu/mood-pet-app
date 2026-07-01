@@ -54,17 +54,15 @@ PetWidget::PetWidget(QWidget *parent)
     setWindowFlags(Qt::Window | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
     setAttribute(Qt::WA_TranslucentBackground);
     setAttribute(Qt::WA_ShowWithoutActivating);
-    setFixedSize(180, 180);
+    setFixedSize(150, 195);
 
     m_display->setAlignment(Qt::AlignCenter);
-    m_display->setWordWrap(true);
-    m_display->setStyleSheet("color: white; font-size: 28px; font-weight: bold;");
+    m_display->setScaledContents(true);
+    m_display->setMargin(0);
+    m_display->setIndent(0);
+    m_display->setStyleSheet("color: white; font-size: 14px; font-weight: bold; padding: 0px;");
     m_display->setMovie(m_movie);
-
-    auto *layout = new QVBoxLayout(this);
-    layout->addWidget(m_display);
-    layout->setContentsMargins(10, 10, 10, 10);
-    setLayout(layout);
+    m_display->setGeometry(0, 45, 150, 150);
 
     m_gifs = {"pet1.gif", "pet2.gif", "pet3.gif", "pet4.gif"};
 
@@ -81,22 +79,93 @@ PetWidget::~PetWidget() = default;
 
 void PetWidget::setStateIdle()
 {
-    // TODO: See CHANGELOG.md #4 — pet GIF state animation pending asset preparation
+    if (!m_gifs.isEmpty()) {
+        const int idx = QRandomGenerator::global()->bounded(m_gifs.size());
+        if (loadLocalMovie(m_gifs.at(idx))) {
+            showDailyQuoteIfFirst();
+            return;
+        }
+    }
+    m_display->setText(tr("😴\n%1").arg(m_mood));
 }
 
 void PetWidget::setStateNormal()
 {
-    // TODO: See CHANGELOG.md #4 — pet GIF state animation pending asset preparation
+    m_movie->stop();
+    m_display->setText(tr("😺\n%1").arg(m_mood));
 }
 
 void PetWidget::setStateRecording()
 {
-    // TODO: See CHANGELOG.md #4 — pet GIF state animation pending asset preparation
+    if (m_gifs.size() >= 2) {
+        if (loadLocalMovie(m_gifs.at(1))) {
+            return;
+        }
+    }
+    m_display->setText(tr("✍️\n%1").arg(m_mood));
 }
 
 void PetWidget::setStateSuccess()
 {
-    // TODO: See CHANGELOG.md #4 — pet GIF state animation pending asset preparation
+    if (!m_gifs.isEmpty()) {
+        if (loadLocalMovie(m_gifs.at(0))) {
+            return;
+        }
+    }
+    m_display->setText(tr("🎉\n%1").arg(m_mood));
+}
+
+static const QStringList kDailyQuotes = {
+    QStringLiteral("今天的你，已经很棒了。"),
+    QStringLiteral("慢慢来，一切都会好起来。"),
+    QStringLiteral("你已经做得很好了。"),
+    QStringLiteral("允许自己偶尔停下来。"),
+    QStringLiteral("你是被认真爱着的人。"),
+    QStringLiteral("每一步都在靠近你想要的明天。"),
+    QStringLiteral("没关系，天会亮的。"),
+    QStringLiteral("今天比昨天又多走了一步。"),
+    QStringLiteral("你不需要对所有人好，先照顾好自己。"),
+    QStringLiteral("喘口气，世界不会倒塌。"),
+    QStringLiteral("即使现在不太顺利，也不代表失败。"),
+    QStringLiteral("你的感受是重要的。"),
+    QStringLiteral("今天也谢谢你陪着自己。"),
+    QStringLiteral("不是每天都要完美，及格也可以。"),
+    QStringLiteral("别把别人的课题扛在自己肩上。"),
+    QStringLiteral("你值得被温柔对待。"),
+    QStringLiteral("做件小事，小小的成就感也好。"),
+    QStringLiteral("有时候，什么都不做也可以。"),
+    QStringLiteral("今天你微笑了吗？哪怕只是尝试一下。"),
+    QStringLiteral("你是这个世界上独一无二的光。")
+};
+
+void PetWidget::showDailyQuoteIfFirst()
+{
+    QSettings s;
+    const QString today = QDate::currentDate().toString(Qt::ISODate);
+    const QString last = s.value("dailyQuote/lastDate", QString()).toString();
+    if (last == today) {
+        return;
+    }
+
+    int lastIdx = s.value("dailyQuote/lastIndex", -1).toInt();
+    int idx = QRandomGenerator::global()->bounded(kDailyQuotes.size());
+    if (kDailyQuotes.size() > 1 && idx == lastIdx) {
+        idx = (idx + 1) % kDailyQuotes.size();
+    }
+
+    s.setValue("dailyQuote/lastDate", today);
+    s.setValue("dailyQuote/lastIndex", idx);
+
+    m_bubble->setMinimumWidth(0);
+    m_bubble->setMaximumWidth(width() - 8);
+    m_bubble->setText(kDailyQuotes.at(idx));
+    m_bubble->adjustSize();
+    const int bx = qMax(0, (width() - m_bubble->width()) / 2);
+    const int by = qMax(0, 45 - m_bubble->height());
+    m_bubble->move(bx, by);
+    m_bubble->raise();
+    m_bubble->show();
+    m_bubbleTimer->start(3000);
 }
 
 void PetWidget::mousePressEvent(QMouseEvent *event)
@@ -110,6 +179,7 @@ void PetWidget::mousePressEvent(QMouseEvent *event)
     if (event->button() == Qt::LeftButton) {
         m_dragPosition = event->globalPosition().toPoint() - frameGeometry().topLeft();
         emit petClicked();
+        emit openInputRequested();
 
         const QStringList tips = {
             tr("你很棒！"),
@@ -118,10 +188,12 @@ void PetWidget::mousePressEvent(QMouseEvent *event)
             tr("来，给自己一个微笑。")
         };
         const int index = QRandomGenerator::global()->bounded(tips.size());
+        m_bubble->setMinimumWidth(0);
+        m_bubble->setMaximumWidth(width() - 8);
         m_bubble->setText(tips.at(index));
         m_bubble->adjustSize();
-        const int bx = width() - m_bubble->width() - 12;
-        const int by = 12;
+        const int bx = qMax(0, (width() - m_bubble->width()) / 2);
+        const int by = qMax(0, 45 - m_bubble->height());
         m_bubble->move(bx, by);
         m_bubble->raise();
         m_bubble->show();

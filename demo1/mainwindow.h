@@ -22,6 +22,7 @@ public:
 public slots:
     void showInputWindow();
     void togglePetVisibility();
+    void showTodayRecords();
 
 private slots:
     void showHistoryWindowProtected();
