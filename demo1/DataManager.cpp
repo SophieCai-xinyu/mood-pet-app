@@ -234,6 +234,8 @@ QJsonObject DataManager::recordToJson(const Record &record) const
     object["type"] = record.type;
     object["timestamp"] = record.timestamp.toString(Qt::ISODate);
     object["hasAttachment"] = record.hasAttachment;
+    object["hasAlarm"] = record.hasAlarm;
+    object["alarmTime"] = record.alarmTime.toString(Qt::ISODate);
     return object;
 }
 
@@ -246,5 +248,7 @@ Record DataManager::jsonToRecord(const QJsonObject &obj) const
     record.type = obj.value("type").toString();
     record.timestamp = QDateTime::fromString(obj.value("timestamp").toString(), Qt::ISODate);
     record.hasAttachment = obj.value("hasAttachment").toBool();
+    record.hasAlarm = obj.value("hasAlarm").toBool(false);
+    record.alarmTime = QDateTime::fromString(obj.value("alarmTime").toString(), Qt::ISODate);
     return record;
 }

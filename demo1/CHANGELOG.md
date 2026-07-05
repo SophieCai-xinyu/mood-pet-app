@@ -105,3 +105,52 @@
 1. **密码重置**: 旧配置中 `security/password` 存储的明文密码在新版本中失效，用户首次访问历史记录时将被提示重新设置密码
 2. **加密密钥**: 如果已有旧的 `.ett` 数据文件（用硬编码密钥加密），新版本会使用新的随机密钥，无法解密旧文件。建议在升级前导出 TXT 备份
 3. **GIF 资源**: 应用可正常运行（fallback 显示 emoji），但要宠物动画正常工作需在 `pet/` 目录放置对应 GIF 文件
+
+---
+
+## 2026-07-06 — final 版本融合 (v1.4)
+
+### 🔀 融合背景
+
+对比 `final/`（协作者版本）和 `demo1/`（本版本）两个 Qt 项目后，取两个版本的最优特性进行融合。融合原则：**安全性和用户体验以 demo1 为准，吸取 final 独有的闹钟和 GIF 自适应功能**。
+
+### ✅ 融合项
+
+| # | 融合来源 | 功能描述 | 涉及文件 | 融合内容 |
+|---|---------|---------|---------|---------|
+| 21 | final | 闹钟提醒系统 | `DataManager.h` `DataManager.cpp` `InputWindow.h` `InputWindow.cpp` `mainwindow.h` `mainwindow.cpp` | `Record` 结构体新增 `hasAlarm`/`alarmTime` 字段并支持 JSON 序列化；`InputWindow` 新增闹钟 UI（QCheckBox + QDateTimeEdit），窗口从 420×320 扩至 420×360；`mainwindow` 新增 `ActiveAlarm` 结构体 + `checkAlarms()` 每秒轮询 + 到点强制置顶弹窗，联动宠物状态设为 "Focused" |
+| 22 | final | GIF 自适应尺寸 | `PetWidget.cpp` | 在构造函数中新增 `QMovie::frameChanged` 信号监听，GIF 加载后自动匹配其原始尺寸（含上方 45px 气泡区），窗口不再固定为 150×195 |
+
+### ✅ demo1 保留优势（不受融合影响）
+
+| 维度 | 保留的 demo1 实现 |
+|------|------------------|
+| 密码安全 | SHA-256 哈希 + `security/passwordHash`（非明文） |
+| 加密密钥 | 随机 32 字节 + QSettings 持久化（非硬编码） |
+| Windows 热键 | `RegisterHotKey` + `nativeEvent(WM_HOTKEY)` 系统级双热键 |
+| macOS 热键 | Carbon 框架双热键 (`Ctrl+Option+N` / `Ctrl+Option+P`) + `UnregisterEventHotKey` 资源释放 |
+| 宠物状态动画 | 4 态完整实现（Idle/Recording/Success/Normal）+ emoji fallback |
+| 每日治愈文案 | 20 条原创中文 + 每日随机 + 避重复逻辑 |
+| 点击宠物→速记 | `openInputRequested` 信号保留 |
+| 托盘图标 | QPainter 手绘 32×32 爱心星光图标 |
+| 托盘双击 | `todayRecordsRequested` 信号 + `showTodayRecords` + `setTimeFilter` |
+| 样式表作用域 | `this->setStyleSheet`（非全局 `qApp->setStyleSheet`） |
+| 代码规范 | 无重复 `setFont` 调用、parent 管理、返回值检查 |
+
+### 📋 本次修改文件总计
+
+| 文件 | 类型 |
+|------|------|
+| `DataManager.h` | 新增闹钟字段 |
+| `DataManager.cpp` | 闹钟字段 JSON 序列化 |
+| `InputWindow.h` | 新增闹钟 UI 成员变量 |
+| `InputWindow.cpp` | 新增闹钟 UI 布局 + 保存/清空逻辑 + 窗口扩容 |
+| `PetWidget.cpp` | 新增 GIF 自适应尺寸 (`frameChanged` 监听) |
+| `mainwindow.h` | 新增 `ActiveAlarm` + `m_alarmTimer` + `checkAlarms` |
+| `mainwindow.cpp` | 新增闹钟轮询 + 记录保存时登记闹钟 |
+
+### ⚠️ 迁移注意事项
+
+4. **闹钟数据**: 旧 `.ett` 数据文件中记录的 `hasAlarm`/`alarmTime` 字段缺失时，`jsonToRecord()` 使用默认值 `false`，兼容旧数据。新产生的闹钟记录会正常序列化并持久化。
+5. **窗口尺寸**: 首次打开 InputWindow 时窗口为 420×360（比旧版高 40px 以容纳闹钟行），不影响已有功能。
+6. **GIF 尺寸**: 现在窗口会自动匹配 GIF 原始尺寸。若 GIF 尺寸异常（0×0），窗口保持默认 150×195。

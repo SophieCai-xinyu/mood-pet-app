@@ -106,6 +106,10 @@ MainWindow::MainWindow(QWidget *parent)
     central->setStyleSheet("background: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 #dae8ff, stop:0.5 #d7e2ff, stop:1 #f4f7ff);");
     setStyleSheet("QMainWindow { background: transparent; } QLabel { color: #1b2d45; } QLineEdit, QTextEdit { color: #081a33; background: rgba(255,255,255,0.95); border: 1px solid #c9d8f4; border-radius: 10px; } ");
 
+    m_alarmTimer = new QTimer(this);
+    connect(m_alarmTimer, &QTimer::timeout, this, &MainWindow::checkAlarms);
+    m_alarmTimer->start(1000);
+
     showWelcomeGuide();
 }
 
@@ -152,7 +156,8 @@ void MainWindow::showWelcomeGuide()
         "- 点击 Open History 查看历史记录并设置密码保护。\n"
         "- 使用 Hide Pet 隐藏 / 显示桌宠。\n"
         "- 右键单击桌宠可隐藏它；左键拖动可移动。\n"
-        "- 快捷键 Ctrl+Alt+N 打开写日记界面。\n\n"
+        "- 快捷键 Ctrl+Alt+N 打开写日记界面。\n"
+        "- 快捷键 Ctrl+Alt+P 切换宠物显示。\n\n"
         "首次使用时，历史记录没有密码，系统会提示你设置一个。"
     );
     QMessageBox::information(this, tr("新手指南"), message);
@@ -229,6 +234,13 @@ void MainWindow::handleRecordSaved(const Record &record)
     m_petWidget->setMood(record.mood);
     m_petWidget->setStateSuccess();
     QTimer::singleShot(1800, m_petWidget, &PetWidget::setStateIdle);
+    if (record.hasAlarm) {
+        ActiveAlarm alarm;
+        alarm.id = record.id;
+        alarm.content = record.content;
+        alarm.alarmTime = record.alarmTime;
+        m_activeAlarms.append(alarm);
+    }
 }
 
 void MainWindow::handlePetClicked()
@@ -257,4 +269,34 @@ void MainWindow::showTodayRecords()
 void MainWindow::refreshHistory()
 {
     m_historyWindow->refreshRecords();
+}
+
+void MainWindow::checkAlarms()
+{
+    if (m_activeAlarms.isEmpty()) {
+        return;
+    }
+
+    QDateTime now = QDateTime::currentDateTime();
+
+    for (int i = 0; i < m_activeAlarms.size(); ++i) {
+        if (now >= m_activeAlarms[i].alarmTime) {
+            ActiveAlarm alarm = m_activeAlarms.takeAt(i);
+            --i;
+
+            QMessageBox *alarmBox = new QMessageBox(this);
+            alarmBox->setWindowTitle(tr("⏰ Time to Review Note"));
+            alarmBox->setText(tr("<b>✨ Hello! It's time for your scheduled reminder:</b><br><br>%1").arg(alarm.content));
+            alarmBox->setIcon(QMessageBox::Information);
+            alarmBox->setWindowFlags(alarmBox->windowFlags() | Qt::WindowStaysOnTopHint);
+            alarmBox->setAttribute(Qt::WA_DeleteOnClose);
+            alarmBox->show();
+            alarmBox->raise();
+            alarmBox->activateWindow();
+
+            if (m_petWidget) {
+                m_petWidget->setMood("Focused");
+            }
+        }
+    }
 }

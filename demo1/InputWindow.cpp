@@ -81,6 +81,25 @@ void InputWindow::createLayout()
     m_moodBox->addItems({tr("Neutral"), tr("Happy"), tr("Calm"), tr("Excited"), tr("Unhappy"), tr("Focused")});
     m_moodBox->setCurrentIndex(0);
 
+    // Alarm section
+    m_alarmCheckBox = new QCheckBox(tr("Remind Me (Alarm)"), this);
+    m_alarmCheckBox->setStyleSheet("QCheckBox { color: #f5f8ff; font-weight: 500; }");
+
+    m_alarmDateTimeEdit = new QDateTimeEdit(QDateTime::currentDateTime(), this);
+    m_alarmDateTimeEdit->setDisplayFormat("yyyy-MM-dd HH:mm");
+    m_alarmDateTimeEdit->setCalendarPopup(true);
+    m_alarmDateTimeEdit->setEnabled(false);
+    m_alarmDateTimeEdit->setStyleSheet(
+        "QDateTimeEdit { color: #081a33; background: rgba(255,255,255,0.95); border: 1px solid #c9d8f4; border-radius: 8px; padding: 4px; }"
+        "QDateTimeEdit:disabled { background: rgba(200, 200, 200, 0.4); color: #888888; }"
+        );
+    connect(m_alarmCheckBox, &QCheckBox::toggled, m_alarmDateTimeEdit, &QDateTimeEdit::setEnabled);
+
+    auto *alarmLayout = new QHBoxLayout;
+    alarmLayout->addWidget(m_alarmCheckBox);
+    alarmLayout->addWidget(m_alarmDateTimeEdit);
+    alarmLayout->addStretch(1);
+
     auto *moodLabel = new QLabel(tr("Mood:"), this);
     moodLabel->setObjectName("MoodLabel");
 
@@ -98,12 +117,13 @@ void InputWindow::createLayout()
     mainLayout->addWidget(m_titleLabel);
     mainLayout->addWidget(m_noteInput);
     mainLayout->addLayout(moodLayout);
+    mainLayout->addLayout(alarmLayout);
     mainLayout->addLayout(buttonLayout);
     mainLayout->setContentsMargins(14, 14, 14, 14);
     mainLayout->setSpacing(10);
 
     setLayout(mainLayout);
-    resize(420, 320);
+    resize(420, 360);
 }
 
 void InputWindow::loadStyleSheet()
@@ -165,6 +185,8 @@ void InputWindow::onSaveClicked()
     record.type = tr("Note");
     record.timestamp = QDateTime::currentDateTime();
     record.hasAttachment = false;
+    record.hasAlarm = m_alarmCheckBox->isChecked();
+    record.alarmTime = m_alarmDateTimeEdit->dateTime();
     emit recordSaved(record);
     clearInputs();
 }
@@ -236,4 +258,6 @@ bool InputWindow::eventFilter(QObject *obj, QEvent *event)
 void InputWindow::clearInputs()
 {
     m_noteInput->clear();
+    m_alarmCheckBox->setChecked(false);
+    m_alarmDateTimeEdit->setDateTime(QDateTime::currentDateTime());
 }

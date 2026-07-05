@@ -14,6 +14,8 @@ struct Record
     QString type;
     QDateTime timestamp;
     bool hasAttachment = false;
+    bool hasAlarm = false;
+    QDateTime alarmTime;
 };
 
 class DataManager : public QObject

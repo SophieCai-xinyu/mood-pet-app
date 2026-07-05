@@ -3,6 +3,8 @@
 
 #include <QWidget>
 #include <QColor>
+#include <QCheckBox>
+#include <QDateTimeEdit>
 
 struct Record;
 
@@ -60,6 +62,8 @@ private:
     QString m_currentMood;
     QColor m_textColor;
     QFont m_textFont;
+    QCheckBox *m_alarmCheckBox;
+    QDateTimeEdit *m_alarmDateTimeEdit;
 };
 
 #endif // INPUTWINDOW_H

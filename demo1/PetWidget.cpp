@@ -72,6 +72,22 @@ PetWidget::PetWidget(QWidget *parent)
     m_bubbleTimer->setSingleShot(true);
     connect(m_bubbleTimer, &QTimer::timeout, m_bubble, &QLabel::hide);
 
+    // GIF adaptive sizing
+    connect(m_movie, &QMovie::frameChanged, this, [this](int frameNumber) {
+        Q_UNUSED(frameNumber);
+        QSize gifSize = m_movie->frameRect().size();
+        if (gifSize.isValid() && gifSize.width() > 0 && gifSize.height() > 0) {
+            const int bubbleZone = 45;
+            const int newW = qMax(150, gifSize.width());
+            const int newH = bubbleZone + gifSize.height();
+            if (this->size() != QSize(newW, newH)) {
+                setFixedSize(newW, newH);
+                m_display->setGeometry(0, bubbleZone, gifSize.width(), gifSize.height());
+            }
+        }
+        this->update();
+    });
+
     setMood(m_mood);
 }
 
@@ -203,7 +219,7 @@ void PetWidget::mousePressEvent(QMouseEvent *event)
             int randomIndex = QRandomGenerator::global()->bounded(m_gifs.size());
             QString randomGif = m_gifs.at(randomIndex);
             if (!loadLocalMovie(randomGif)) {
-                m_display->setText(tr(":cat:\n%1").arg(m_mood));
+                m_display->setText(tr("😺\n%1").arg(m_mood));
             }
         }
 
@@ -260,5 +276,5 @@ void PetWidget::setMood(const QString &mood)
     }
 
     // fallback text label when gif fails
-    m_display->setText(tr(":cat:\n%1").arg(m_mood));
+    m_display->setText(tr("😺\n%1").arg(m_mood));
 }

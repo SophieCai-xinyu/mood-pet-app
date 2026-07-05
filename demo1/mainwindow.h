@@ -3,6 +3,9 @@
 
 #include <QMainWindow>
 #include "DataManager.h"
+#include <QTimer>
+#include <QDateTime>
+#include <QList>
 
 class QColor;
 class QPushButton;
@@ -10,6 +13,12 @@ class InputWindow;
 class PetWidget;
 class HistoryWindow;
 class TrayManager;
+
+struct ActiveAlarm {
+    QString id;
+    QString content;
+    QDateTime alarmTime;
+};
 
 class MainWindow : public QMainWindow
 {
@@ -29,6 +38,7 @@ private slots:
     void handleRecordSaved(const Record &record);
     void handlePetClicked();
     void refreshHistory();
+    void checkAlarms();
 
 protected:
 #ifdef Q_OS_WIN
@@ -47,6 +57,8 @@ private:
     TrayManager *m_trayManager;
     QPushButton *m_togglePetButton = nullptr;
     bool m_petVisible = true;
+    QTimer *m_alarmTimer;
+    QList<ActiveAlarm> m_activeAlarms;
 };
 
 #endif // MAINWINDOW_H
