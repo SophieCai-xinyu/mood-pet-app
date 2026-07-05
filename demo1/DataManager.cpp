@@ -6,14 +6,36 @@
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QSettings>
 #include <QStandardPaths>
 #include <QTextStream>
+#include <QRandomGenerator>
 #include <algorithm>
 
 DataManager::DataManager(QObject *parent)
     : QObject(parent)
 {
+    ensureEncryptionKey();
     load();
+}
+
+void DataManager::ensureEncryptionKey()
+{
+    QSettings s;
+    const QString keyName = "security/encKey";
+    const QString savedKey = s.value(keyName, QString()).toString();
+
+    if (savedKey.isEmpty()) {
+        // First run: generate a random 32-byte key, persist to QSettings
+        QByteArray key(32, '\0');
+        for (int i = 0; i < key.size(); ++i) {
+            key[i] = static_cast<char>(QRandomGenerator::global()->bounded(256));
+        }
+        m_secretKey = key;
+        s.setValue(keyName, QString::fromLatin1(key.toBase64()));
+    } else {
+        m_secretKey = QByteArray::fromBase64(savedKey.toLatin1());
+    }
 }
 
 QString DataManager::storagePath(const QString &filePath) const
@@ -212,6 +234,8 @@ QJsonObject DataManager::recordToJson(const Record &record) const
     object["type"] = record.type;
     object["timestamp"] = record.timestamp.toString(Qt::ISODate);
     object["hasAttachment"] = record.hasAttachment;
+    object["hasAlarm"] = record.hasAlarm;
+    object["alarmTime"] = record.alarmTime.toString(Qt::ISODate);
     return object;
 }
 
@@ -224,5 +248,7 @@ Record DataManager::jsonToRecord(const QJsonObject &obj) const
     record.type = obj.value("type").toString();
     record.timestamp = QDateTime::fromString(obj.value("timestamp").toString(), Qt::ISODate);
     record.hasAttachment = obj.value("hasAttachment").toBool();
+    record.hasAlarm = obj.value("hasAlarm").toBool(false);
+    record.alarmTime = QDateTime::fromString(obj.value("alarmTime").toString(), Qt::ISODate);
     return record;
 }

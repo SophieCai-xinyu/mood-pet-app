@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QDateTime>
+#include <QJsonObject>
 #include <QVector>
 
 struct Record
@@ -13,6 +14,8 @@ struct Record
     QString type;
     QDateTime timestamp;
     bool hasAttachment = false;
+    bool hasAlarm = false;
+    QDateTime alarmTime;
 };
 
 class DataManager : public QObject
@@ -42,9 +45,10 @@ private:
     QByteArray decrypt(const QByteArray &cipher) const;
     QJsonObject recordToJson(const Record &record) const;
     Record jsonToRecord(const QJsonObject &obj) const;
+    void ensureEncryptionKey();
 
     QVector<Record> m_records;
-    const QByteArray m_secretKey = QByteArrayLiteral("hearttravel-demo-key-2026");
+    QByteArray m_secretKey;
 };
 
 #endif // DATAMANAGER_H

@@ -15,9 +15,15 @@ static pascal OSStatus globalHotkeyHandler(EventHandlerCallRef nextHandler, Even
         return CallNextEventHandler(nextHandler, event);
     }
 
-    if (hotKeyID.id == 1 && g_mainWindow) {
-        g_mainWindow->showInputWindow();
-        return noErr;
+    if (g_mainWindow) {
+        if (hotKeyID.id == 1) {
+            g_mainWindow->showInputWindow();
+            return noErr;
+        }
+        if (hotKeyID.id == 2) {
+            g_mainWindow->togglePetVisibility();
+            return noErr;
+        }
     }
     return CallNextEventHandler(nextHandler, event);
 }
@@ -26,6 +32,9 @@ static pascal OSStatus globalHotkeyHandler(EventHandlerCallRef nextHandler, Even
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
+    a.setOrganizationName("ConTroL_Group");
+    a.setApplicationName("HeartlightCompanion");
+
     a.setQuitOnLastWindowClosed(false);
 
     MainWindow w;
@@ -35,14 +44,33 @@ int main(int argc, char *argv[])
     EventTypeSpec eventType = { kEventClassKeyboard, kEventHotKeyPressed };
     InstallApplicationEventHandler(&globalHotkeyHandler, 1, &eventType, nullptr, nullptr);
 
-    EventHotKeyID hotKeyID;
-    hotKeyID.signature = 'HLHK';
-    hotKeyID.id = 1;
-    EventHotKeyRef hotKeyRef = nullptr;
-    RegisterEventHotKey(kVK_ANSI_N, controlKey | optionKey, hotKeyID, GetApplicationEventTarget(), 0, &hotKeyRef);
+    // Ctrl+Option+N -> open quick note
+    EventHotKeyID hotKeyInput;
+    hotKeyInput.signature = 'HLHK';
+    hotKeyInput.id = 1;
+    static EventHotKeyRef hotKeyRefInput = nullptr;
+    RegisterEventHotKey(kVK_ANSI_N, controlKey | optionKey, hotKeyInput, GetApplicationEventTarget(), 0, &hotKeyRefInput);
+
+    // Ctrl+Option+P -> toggle pet visibility
+    EventHotKeyID hotKeyPet;
+    hotKeyPet.signature = 'HLHK';
+    hotKeyPet.id = 2;
+    static EventHotKeyRef hotKeyRefPet = nullptr;
+    RegisterEventHotKey(kVK_ANSI_P, controlKey | optionKey, hotKeyPet, GetApplicationEventTarget(), 0, &hotKeyRefPet);
 #endif
 
     w.show();
 
-    return a.exec();
+    const int ret = a.exec();
+
+#ifdef Q_OS_MAC
+    if (hotKeyRefInput) {
+        UnregisterEventHotKey(hotKeyRefInput);
+    }
+    if (hotKeyRefPet) {
+        UnregisterEventHotKey(hotKeyRefPet);
+    }
+#endif
+
+    return ret;
 }

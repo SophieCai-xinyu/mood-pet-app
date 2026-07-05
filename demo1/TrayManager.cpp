@@ -9,8 +9,10 @@
 #include <QApplication>
 #include <QFileDialog>
 #include <QMenu>
+#include <QPainter>
+#include <QPainterPath>
+#include <QPixmap>
 #include <QSystemTrayIcon>
-#include <QStyle>
 
 TrayManager::TrayManager(InputWindow *inputWindow,
                          HistoryWindow *historyWindow,
@@ -52,11 +54,54 @@ TrayManager::TrayManager(InputWindow *inputWindow,
     m_menu->addAction(m_quitAction);
 
     m_trayIcon->setContextMenu(m_menu);
-    m_trayIcon->setIcon(qApp->style()->standardIcon(QStyle::SP_ComputerIcon));
+    m_trayIcon->setIcon(makeTrayIcon());
     m_trayIcon->setToolTip(tr("心光伴旅 Demo"));
+
+    connect(m_trayIcon, &QSystemTrayIcon::activated, this, [this](QSystemTrayIcon::ActivationReason reason) {
+        if (reason == QSystemTrayIcon::DoubleClick) {
+            emit todayRecordsRequested();
+        }
+    });
 }
 
 TrayManager::~TrayManager() = default;
+
+QIcon TrayManager::makeTrayIcon() const
+{
+    QPixmap pix(32, 32);
+    pix.fill(Qt::transparent);
+    QPainter p(&pix);
+    p.setRenderHint(QPainter::Antialiasing);
+
+    p.setPen(Qt::NoPen);
+    p.setBrush(QColor(0x54, 0x72, 0xE1));
+    p.drawRoundedRect(1, 1, 30, 30, 8, 8);
+
+    QLinearGradient grad(0, 0, 0, 32);
+    grad.setColorAt(0.0, QColor(0x72, 0x61, 0xEF));
+    grad.setColorAt(1.0, QColor(0x54, 0x72, 0xE1));
+    p.setBrush(grad);
+    p.drawRoundedRect(1, 1, 30, 30, 8, 8);
+
+    QPainterPath heart;
+    const qreal cx = 16, cy = 14;
+    heart.moveTo(cx, cy + 5);
+    heart.cubicTo(cx - 7, cy - 3, cx - 9, cy + 7, cx, cy + 9);
+    heart.cubicTo(cx + 9, cy + 7, cx + 7, cy - 3, cx, cy + 5);
+    p.setBrush(Qt::white);
+    p.drawPath(heart);
+
+    auto drawStar = [&](qreal sx, qreal sy, qreal s) {
+        p.setBrush(QColor(0xFF, 0xD7, 0x00));
+        p.drawEllipse(QPointF(sx, sy), s, s);
+    };
+    drawStar(7, 8, 1.8);
+    drawStar(25, 9, 1.5);
+    drawStar(10, 24, 1.3);
+
+    p.end();
+    return QIcon(pix);
+}
 
 void TrayManager::initialize()
 {
@@ -74,6 +119,7 @@ void TrayManager::onShowInput()
 
 void TrayManager::onShowHistory()
 {
+    // Route through signal so MainWindow can enforce password protection
     emit showHistoryWindowRequested();
 }
 

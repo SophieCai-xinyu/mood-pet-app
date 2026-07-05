@@ -2,6 +2,8 @@
 #define PETWIDGET_H
 
 #include <QWidget>
+#include <QDate>
+#include <QSettings>
 #include <QVector>
 #include <QString>
 
@@ -25,15 +27,15 @@ public:
 
 signals:
     void petClicked();
+    void openInputRequested();
 
 protected:
     void mousePressEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
-    void mouseDoubleClickEvent(QMouseEvent *event) override;
 
 private:
-    void showBubble();
     bool loadLocalMovie(const QString &filename);
+    void showDailyQuoteIfFirst();
 
     QPoint m_dragPosition;
     QString m_mood;

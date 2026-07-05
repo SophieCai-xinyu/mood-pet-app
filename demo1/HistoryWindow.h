@@ -19,6 +19,7 @@ public:
     explicit HistoryWindow(DataManager *manager, QWidget *parent = nullptr);
     ~HistoryWindow() override;
     void refreshRecords();
+    void setTimeFilter(const QString &filter);
 
 private slots:
     void onSearchTextChanged(const QString &text);

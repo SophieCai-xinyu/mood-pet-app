@@ -1,0 +1,14 @@
+debug/main.o
+debug/mainwindow.o
+debug/InputWindow.o
+debug/PetWidget.o
+debug/DataManager.o
+debug/HistoryWindow.o
+debug/TrayManager.o
+debug/qrc_resources.o
+debug/moc_mainwindow.o
+debug/moc_InputWindow.o
+debug/moc_PetWidget.o
+debug/moc_DataManager.o
+debug/moc_HistoryWindow.o
+debug/moc_TrayManager.o

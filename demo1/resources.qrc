@@ -1,5 +1,10 @@
 <!DOCTYPE RCC><RCC version="1.0">
 <qresource prefix="/">
     <file>style.qss</file>
+    <file>pet/pet1.gif</file>
+    <file>pet/pet2.gif</file>
+    <file>pet/pet3.gif</file>
+    <file>pet/pet4.gif</file>
+    <file>pet/pet_sleep.gif</file>
 </qresource>
 </RCC>
