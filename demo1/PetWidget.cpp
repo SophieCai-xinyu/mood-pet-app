@@ -11,6 +11,7 @@
 #include <QCoreApplication>
 #include <QDir>
 #include <QStringList>
+#include <QPainter>
 
 static QString toLocalPetPath(const QString &filename)
 {
@@ -51,7 +52,7 @@ PetWidget::PetWidget(QWidget *parent)
     , m_bubbleTimer(new QTimer(this))
 {
     setObjectName("PetWidget");
-    setWindowFlags(Qt::Window | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
+    setWindowFlags(Qt::Window | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint | Qt::NoDropShadowWindowHint);
     setAttribute(Qt::WA_TranslucentBackground);
     setAttribute(Qt::WA_ShowWithoutActivating);
     setFixedSize(150, 195);
@@ -235,6 +236,31 @@ void PetWidget::mouseMoveEvent(QMouseEvent *event)
     } else {
         QWidget::mouseMoveEvent(event);
     }
+}
+
+void PetWidget::showEvent(QShowEvent *event)
+{
+    QWidget::showEvent(event);
+    setAttribute(Qt::WA_TranslucentBackground, true);
+
+    if (m_movie) {
+        QSize gifSize = m_movie->frameRect().size();
+        if (gifSize.isValid() && gifSize.width() > 0 && gifSize.height() > 0) {
+            const int bubbleZone = 45;
+            const int newW = qMax(150, gifSize.width());
+            const int newH = bubbleZone + gifSize.height();
+            setFixedSize(newW, newH);
+            m_display->setGeometry(0, bubbleZone, gifSize.width(), gifSize.height());
+        }
+    }
+
+    this->update();
+}
+void PetWidget::paintEvent(QPaintEvent *event)
+{
+    Q_UNUSED(event);
+    QPainter painter(this);
+    painter.fillRect(this->rect(), Qt::transparent);
 }
 
 bool PetWidget::loadLocalMovie(const QString &filename)

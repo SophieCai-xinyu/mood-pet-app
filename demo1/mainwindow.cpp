@@ -195,6 +195,7 @@ void MainWindow::showHistoryWindowProtected()
         QMessageBox::warning(this, tr("Access Denied"), tr("Incorrect password. History access is locked."));
         return;
     }
+    m_historyWindow->setWindowFlags(Qt::Window);
     m_historyWindow->show();
     m_historyWindow->raise();
     m_historyWindow->activateWindow();

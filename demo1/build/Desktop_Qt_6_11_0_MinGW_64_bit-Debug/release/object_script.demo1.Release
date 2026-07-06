@@ -1,0 +1,14 @@
+release/main.o
+release/mainwindow.o
+release/InputWindow.o
+release/PetWidget.o
+release/DataManager.o
+release/HistoryWindow.o
+release/TrayManager.o
+release/qrc_resources.o
+release/moc_mainwindow.o
+release/moc_InputWindow.o
+release/moc_PetWidget.o
+release/moc_DataManager.o
+release/moc_HistoryWindow.o
+release/moc_TrayManager.o
