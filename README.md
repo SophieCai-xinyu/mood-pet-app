@@ -46,5 +46,5 @@
 - 当前示例使用 Qt 标准组件 + GIF 动画资源模拟宠物状态，缺失时自动 fallback 为 emoji
 - 窗口会自动匹配 GIF 原始尺寸，不再固定大小
 - 首次设置密码后无法找回，请妥善保管；升级前建议通过托盘"数据备份"功能导出数据
-
+- 北大网盘demo地址 https://disk.pku.edu.cn/anyshare/zh-cn/play/?_tb=none&gns=2B66C04DC44F486C9DE31C440E973D41%2F9967BB8BDA524038A480D020BCC814C6&name=demo_final.mp4
 Enjoy the demo!
